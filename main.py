@@ -17,7 +17,7 @@ class Game:
         
     def new_game(self):
         self.car = Car(self)
-        self.q_learning = Q_learning(self)
+        self.q_learning = Q_learning(self, self.car)
 
     def update(self):
         self.car.update()
