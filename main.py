@@ -31,17 +31,33 @@ class Game:
         run = True
         clock = pygame.time.Clock()
 
-        while run:
-            clock.tick(FPS)
+        episode_count = 50
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    run = False
+        for episode in range(episode_count):
+            self.new_game()
+
+            while run:
+                clock.tick(FPS)
+
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        run = False
+                        break
+
+                self.update()
+                self.draw()
+                pygame.display.update()
+
+                if self.car.check_collision_racetrack():
                     break
 
-            self.update()
-            self.draw()
-            pygame.display.update()
+            self.q_learning.update()
+
+            if episode % 100 == 0:
+                print(f"Episode {episode} complete")
+
+        pygame.quit()
+
 
 if __name__ == '__main__':
     game = Game()
