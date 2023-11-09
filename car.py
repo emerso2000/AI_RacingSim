@@ -2,6 +2,7 @@ import pygame
 import math
 import numpy as np
 from PIL import Image
+import time
 
 from settings import *
 from utils import *
@@ -125,8 +126,32 @@ class Car:
         return (self.x, self.y, self.vel, self.angle)
     
     def reset_position(self):
-        self.x, self.y = PLAYER_INITIAL_POS_X, PLAYER_INITIAL_POS_Y
-        print("reset")
+        self.x, self.y, self.angle = PLAYER_INITIAL_POS_X, PLAYER_INITIAL_POS_Y, PLAYER_ANGLE
+
+    def termination_condition(self):
+        if self.check_collision_racetrack() == True:
+            # print("terminate")
+            self.reset_position()
+            # time.sleep(5)
+
+    def apply_action(self, action):
+        if action == 0:
+            self.vel = MAX_VEL
+            self.moved = True
+        if action == 1:
+            self.angle += ROTATION_VEL
+        if action == 2:
+            self.angle -= ROTATION_VEL
+        
+        radians = math.radians(self.angle)
+        vertical = math.cos(radians) * self.vel
+        horizontal = math.sin(radians) * self.vel
+
+        self.y -= vertical
+        self.x -= horizontal
+
+        if not self.moved:
+            self.vel = 0
 
     def draw(self):
         WIN.blit(TRACK, (0, 0))
@@ -137,3 +162,4 @@ class Car:
         self.movement()
         self.check_collision_wall()
         self.check_collision_racetrack()
+        self.termination_condition()
